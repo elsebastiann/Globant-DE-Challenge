@@ -1,0 +1,4 @@
+GOOGLE_APPLICATION_CREDENTIALS=Strg-key/llave.json
+BUCKET_NAME=bucket
+DATASET_ID=dataset
+PROJECT_ID=proyecto
