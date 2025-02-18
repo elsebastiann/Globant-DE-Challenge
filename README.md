@@ -64,6 +64,16 @@ Para ejecutar el proyecto, es necesario tener configurados los siguientes elemen
    | POST | /backup/{table} | Genera un respaldo en formato AVRO y lo almacena en GCP |
    | POST | /restore/{table} | Restaura una tabla desde el último respaldo disponible |
 
+    Contrataciones por job y department
+   | Metodo | Endpoint | Descripcion|
+   |-|-|-|
+   | GET | /hires_by_quarter/{year} | Genera el numero de contrataciones de cada una de las combinaciones posibles Job/Department para cada trimestre del año seleccionado |
+
+    Contrataciones por department superiores al promedio
+   | Metodo | Endpoint | Descripcion|
+   |-|-|-|
+   | GET | /avg_plus_hires_by_department/{year} | Genera el numero de contrataciones de cada un Department que son superiores al numero de contrataciones promedio del año seleccionado |
+
 3. **Notas importantes**
 
    - Validacion de datos: antes de insertar registros en BigQuery, se verifica la estructura y tipos de datos esperados
