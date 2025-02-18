@@ -1,0 +1,13 @@
+2025-02-17 22:03:32,704 - Registro inválido: {'id': 1, 'name': 'John Doe', 'datetime': '2024-02-17 10:30:00', 'department_id': 1, 'job_id': 1} - Motivo: ID duplicado en la base de datos
+2025-02-17 22:03:32,705 - Registro inválido: {'id': 2, 'name': 'Jane Smith', 'datetime': '2024-02-17 11:45:00', 'department_id': 2, 'job_id': 2} - Motivo: ID duplicado en la base de datos
+2025-02-18 07:46:42,528 - Registro inválido: {'id': 1, 'job': 'Software Engineer'} - Motivo: ID duplicado en la base de datos
+2025-02-18 12:25:38,008 - Registro invalido: {'id': 1, 'department': 'testing'} - Motivo: Tipo incorrecto o campo faltante: job
+2025-02-18 12:26:47,197 - Registro invalido: {'id': 1, 'department': 'testing'} - Motivo: Tipo incorrecto o campo faltante: job
+2025-02-18 12:27:01,907 - Registro invalido: {'id': 1, 'job': 'testing'} - Motivo: id ya existe en la base de datos
+2025-02-18 12:27:24,272 - Registro invalido: {'id': 1, 'asdas': 'testing'} - Motivo: Tipo incorrecto o campo faltante: job
+2025-02-18 12:27:30,712 - Registro invalido: {'id': 1, 'asdas': 'testing'} - Motivo: Tipo incorrecto o campo faltante: job
+2025-02-18 12:27:54,259 - Registro invalido: {'id': 1, 'department': 'testing'} - Motivo: id ya existe en la base de datos
+2025-02-18 12:30:03,929 - Registro invalido: {'id': 1, 'name': 'sebastian lopez', 'datetime': '2024-02-03 10:10:10', 'department_id': 400, 'job_id': 700} - Motivo: id ya existe en la base de datos
+2025-02-18 12:30:33,160 - Registro invalido: {'id': 123424343, 'name': 'sebastian lopez', 'datetime': '2024-02-03', 'department_id': 400, 'job_id': 700} - Motivo:  Formato de fecha incorrecto en 'datetime'
+2025-02-18 12:31:42,488 - Registro invalido: {'id': 123424343, 'name': 'sebastian lopez', 'datetime': '2024-02-03', 'department_id': 400, 'job_id': 700} - Motivo:  Formato de fecha incorrecto en 'datetime'
+2025-02-18 12:31:56,889 - Registro invalido: {'id': 123424343, 'name': 'sebastian lopez', 'datetime': '24-02-03 10:10:10', 'department_id': 400, 'job_id': 700} - Motivo:  Formato de fecha incorrecto en 'datetime'
