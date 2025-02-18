@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "globant-de-challenge",
+  "private_key_id": "de39bfecfb10359d51c2efd9b4cc8fb182cf8255",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDO/u4bEUadXdyp\n7LJEiaERqX6pY1u8JSduqW2AdIL1IxT/3wfwhgCYijF8Neq75A2WbWwMEnOMgPbF\nZTePyg3BNjL8FaU35lOqEOYGEj9v16+bS5rISKxx334nMhE3MsjDJmFRQQLbm1VN\noFoeulk9bgLcTnHi1nakkthIIsqA8A/1tOss44khycbh6aWnAX+hdLp4S5MfzW/X\nhGJuNQQ7mbVXHGgoWdjwCukbJUMevPRmP8Fv9FC1OXWeczYZ3A1w33x4Uo1buLMb\nav9zt9hUXM1GtkYT0vPW8hPZmozvFLncEnfH1NnCoCvi4I6DB3sc+rZoHxmecvoE\nwT41wcO5AgMBAAECggEAAoDJr1Ebqf5/Exz2IOcLKBQFIJY/fzxxyCBLXzDJfp5g\nfCGdznZIXo/ZPlfGkWQWF/oVwuWcORg8I7HwJJB8bxgxMKQwXccuvtE6fttMohUZ\nHgchhYd/clcSBvZPh/vYuqdlqN5g4vfzZZ9pR5LYTmpcpX5bWTNftujBrcmh6kI3\nUIU79auCg/2sfUhn9V04P8d6yyPX7TS0FPVDl3x5x5COFHymn0G7Bsxep9KpFYPS\nGgTLB4/GUr6WVvwCl/Rhv5YgCsrNMdheMhKPHyApWtUr51a5nEZuL3QHDkDfykqD\ndpz+OqdJPL605h/laK+1exmJyaAHrxoS2rt2qw4+QQKBgQD7LLy6XSeDD4tNvw1W\n9RCzV51WYEvXZogwzuLu3SrDru6rbRdmVqrZ1jzg2NhVlXq6FyMWrX8RQlNyAIMi\n0LNdSvMEr7JW4OfJQwoOSSc3oM6XUTqvO42btoqJaNwq92gzK0bjKnu4U8hVoHob\ncipOxVkeLJ/aXieciHGsgJUK0QKBgQDS+OxoFIyj3tJD2bp5FgWYxAihG4INwcnq\n/oFLRMiXbltdkKCr7GGKJ7qBAmZ6KIrfGvoWX/9hMvfA42/4Kavu/MdHMdJyrVmK\nkjMCY3zt6DNdCsLVWcrEikn7FigpD6Q07Gh2M9/eZQJEyiNpBn0uBO4G+nc7p73k\nkvtKeUgUaQKBgF5J6wci1SRT/31ODRnpoT1R1JSKTa4spU99Op9kkxsmXh4oM7KN\nMlHYJL5baMqn9IxLBzcKJjs6ZMzU+GVnZw3MhvHpas9GWnypF+tI9tnhGeyf56HE\nf2JG4ja3EH9opMsgodnBJvSJLxlFxtDqyIsNdmjnY5K76a7PYazaEBkhAoGACjEY\nSpbjjG8RPVHhXkQgFRczS4UmrT91X7LX0CkMf7RHGagI+wU6WRA+REk3ZiNbQhft\niPMuRSXPLjROjnCE69CuV9QiVIPnVXhmmnDv8hZLlO0WKHRkBUag+E5DtmgZCK17\nBmrPH9FFYMlbGJHFrllynkevRuR9mfM3zIs7XjECgYEApGeHWNfoKBsGt6ro30rO\naxoRzwePfGsqPFxI2jy4zr/hQ0TAwTcSBs7S9pnFc9ex9mbPvB7SOnl0oFkEjvnX\nyzAkFrs6xNCXYpQkoXbGochtSIjR1RKAYjfdFEIUM4/agBgWXzjTLSXLWQvcA+nS\nl8lk3+5Pv/8NkC793xmUNSY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "storage-admin@globant-de-challenge.iam.gserviceaccount.com",
+  "client_id": "112925801551642452889",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/storage-admin%40globant-de-challenge.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
