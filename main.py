@@ -289,3 +289,59 @@ async def restore_table(table: str):
     job.result()
 
     return {"message": f"Tabla '{table}' restaurada correctamente"}
+
+# Numero de empleados contratados para cada job y depertment
+@app.get("/hires_by_quarter/{year}")
+async def hires_by_quarter(year: int):
+    query = f"""
+        SELECT 
+        d.department AS department,
+        j.job AS job,
+        SUM(CASE WHEN EXTRACT(QUARTER FROM DATE(h.datetime)) = 1 THEN 1 ELSE 0 END) AS Q1,
+        SUM(CASE WHEN EXTRACT(QUARTER FROM DATE(h.datetime)) = 2 THEN 1 ELSE 0 END) AS Q2,
+        SUM(CASE WHEN EXTRACT(QUARTER FROM DATE(h.datetime)) = 3 THEN 1 ELSE 0 END) AS Q3,
+        SUM(CASE WHEN EXTRACT(QUARTER FROM DATE(h.datetime)) = 4 THEN 1 ELSE 0 END) AS Q4
+        FROM `{PROJECT_ID}.{DATASET_ID}.hired_employees` h
+        JOIN `{PROJECT_ID}.{DATASET_ID}.departments` d ON h.department_id = d.id
+        JOIN `{PROJECT_ID}.{DATASET_ID}.jobs` j ON h.job_id = j.id
+        WHERE EXTRACT(YEAR FROM DATE(h.datetime)) = {year}
+        GROUP BY d.department, j.job;
+    """
+    
+    query_job = BQ_CLIENT.query(query)  
+    results = [dict(row) for row in query_job.result()]
+    if not results:
+        return {"No hay contrataciones para ese año"}
+    
+    return {"message": f"Contrataciones por trimestre en {year}", "data": results}
+
+# Contrataciones por department que superan el promedio
+@app.get("/avg_plus_hires_by_department/{year}")
+async def avg_plus_hires_by_department(year: int):
+    query = f"""
+        WITH DepartmentHires AS (
+            SELECT 
+            d.id AS id,
+            d.department AS department,
+            COUNT(*) AS total_hires
+            FROM `{PROJECT_ID}.{DATASET_ID}.hired_employees` h
+            JOIN `{PROJECT_ID}.{DATASET_ID}.departments` d ON h.department_id = d.id
+            WHERE EXTRACT(YEAR FROM DATE(h.datetime)) = {year}
+            GROUP BY d.id, d.department
+        ),
+        MeanHires AS (SELECT AVG(total_hires) AS avg_hires FROM DepartmentHires)
+        SELECT 
+        dh.id,
+        dh.department,
+        dh.total_hires
+        FROM DepartmentHires dh
+        JOIN MeanHires mh ON dh.total_hires > mh.avg_hires
+        ORDER BY dh.total_hires DESC;
+    """
+    
+    query_job = BQ_CLIENT.query(query)  # Ejecuta la consulta en BigQuery
+    results = [dict(row) for row in query_job.result()]  # Convierte los resultados en lista de diccionarios
+    if not results:
+        return {"No hay contrataciones para ese año"}
+    
+    return {"message": f"Contrataciones superiores al promerio por department en {year}", "data": results}
