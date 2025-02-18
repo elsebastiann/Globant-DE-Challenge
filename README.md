@@ -13,7 +13,7 @@ Para ejecutar el proyecto, es necesario tener configurados los siguientes elemen
 
 *Estos dos ultimos son mas que todo para hacer validaciones puentuales en los datos*
 
-## 🔧 Instalación
+## Instalación
 
 1. **Clonar el repositorio**
    ```bash
@@ -27,13 +27,12 @@ Para ejecutar el proyecto, es necesario tener configurados los siguientes elemen
    
    Renombra el archivo variables.txt a .env y actualizalo con los valores reales:
 
-   - credenciales gcp: Strg-key/globant-de-challenge-de39bfecfb10.json
+   - credenciales gcp: Strg-key/globant-de-challenge-80c6ed3ef0d4.json
    - bucket: globant-de-challenge
    - dataset: ds_globant_de_challenge
    - poyecto: globant-de-challenge
 
-4. Renombra el archivo *credenciales.txt* a *globant-de-challenge-de39bfecfb10.json*.
-
+4. La llave de la cuenta de servicio sera enviada privadamente al usuario *globant-de-challenge-80c6ed3ef0d4.json*.
 
 ## Ejecucion
 
@@ -70,6 +69,5 @@ Para ejecutar el proyecto, es necesario tener configurados los siguientes elemen
    - Validacion de datos: antes de insertar registros en BigQuery, se verifica la estructura y tipos de datos esperados
    - Prevencion de duplicados: se detectan IDs repetidos antes de insertar nuevos registros
    - Respaldo y recuperacion: los datos pueden respaldarse en AVRO y restaurarse usando la ultima copia de seguridad disponible de cada tabla
-   - Configuracion segura: Las credenciales y configuraciones sensibles se explica como ser configuradas para no cargarlas directamente en el proyecto. Esta exepcion se hace por ser un challenge tecnico con intensiones meramente de validar expertiz tecnico para la entrevista
+   - Configuracion segura: se explica como deben ser configuradas las Las credenciales y configuraciones sensibles para no cargarlas directamente en el proyecto.
   
-   - 
