@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException, Body, Response, Query
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 from google.cloud import storage
@@ -9,6 +9,12 @@ from dotenv import load_dotenv
 import fastavro
 import io
 from google.api_core.exceptions import BadRequest
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
+import base64
 
 load_dotenv()
 app = FastAPI()
@@ -204,7 +210,6 @@ async def insert_data(table: str, data: list = Body(...)):
 
     return {"message": "Datos insertados correctamente"}
 
-
 # Crear backup de tabla en el bucket en formato avro
 @app.post("/backup/{table}")
 async def backup_table(table: str):
@@ -225,7 +230,6 @@ async def backup_table(table: str):
     extract_job.result()
 
     return {"message": "Backup generado correctamente", "file": destination_uri}
-
 
 # Restaurar tabla desde backup creado previamente
 @app.post("/restore/{table}")
@@ -292,7 +296,8 @@ async def restore_table(table: str):
 
 # Numero de empleados contratados para cada job y depertment
 @app.get("/hires_by_quarter/{year}")
-async def hires_by_quarter(year: int):
+async def hires_by_quarter(year: int, top_n: int = Query(None, description="Requerido para ver la grafica"), view: bool = Query(False, description="Mostrar grafico en vez de los datos")
+):
     query = f"""
         SELECT 
         d.department AS department,
@@ -300,24 +305,79 @@ async def hires_by_quarter(year: int):
         SUM(CASE WHEN EXTRACT(QUARTER FROM DATE(h.datetime)) = 1 THEN 1 ELSE 0 END) AS Q1,
         SUM(CASE WHEN EXTRACT(QUARTER FROM DATE(h.datetime)) = 2 THEN 1 ELSE 0 END) AS Q2,
         SUM(CASE WHEN EXTRACT(QUARTER FROM DATE(h.datetime)) = 3 THEN 1 ELSE 0 END) AS Q3,
-        SUM(CASE WHEN EXTRACT(QUARTER FROM DATE(h.datetime)) = 4 THEN 1 ELSE 0 END) AS Q4
+        SUM(CASE WHEN EXTRACT(QUARTER FROM DATE(h.datetime)) = 4 THEN 1 ELSE 0 END) AS Q4,
+        COUNT(*) AS total_hires
         FROM `{PROJECT_ID}.{DATASET_ID}.hired_employees` h
         JOIN `{PROJECT_ID}.{DATASET_ID}.departments` d ON h.department_id = d.id
         JOIN `{PROJECT_ID}.{DATASET_ID}.jobs` j ON h.job_id = j.id
         WHERE EXTRACT(YEAR FROM DATE(h.datetime)) = {year}
-        GROUP BY d.department, j.job;
+        GROUP BY d.department, j.job
+        ORDER BY total_hires DESC
     """
+    #Agrega el top n al query para mostrar la grafica
+    if top_n is not None:
+        query += f" LIMIT {top_n}"
+
+    query_job = BQ_CLIENT.query(query)
+    results = list(query_job.result())
+
+    try:
+        if not results:
+            return {"message": f"No hay contrataciones para el año {year}"}
+        if view and top_n is None:
+            raise HTTPException(status_code=400, detail="El parámetro 'top_n' para mostrar la grafica.")
+        elif not view:
+            return {"message": f"Contrataciones por trimestre en {year}", "data": results}
+        else:
+            departments_jobs = [f"{row['department']} - {row['job']}" for row in results]
+            q1 = [row["Q1"] for row in results]
+            q2 = [row["Q2"] for row in results]
+            q3 = [row["Q3"] for row in results]
+            q4 = [row["Q4"] for row in results]
+            
+            quarters = ["Q1", "Q2", "Q3", "Q4"]
+            data = [q1, q2, q3, q4]
+
+            # Ordenar en orden descendente para el gráfico
+            departments_jobs.reverse()
+            q1.reverse()
+            q2.reverse()
+            q3.reverse()
+            q4.reverse()
+
+            # Crear el gráfico de barras apiladas
+            fig, ax = plt.subplots(figsize=(12, 8))
+            bottom = np.zeros(len(departments_jobs)) 
+            colors = plt.get_cmap("tab20").colors
+
+            for i, quarter in enumerate(quarters):
+                values = data[i]
+                ax.barh(departments_jobs, values, label=quarter, left=bottom, color=colors[i])
+                bottom += values
+
+            ax.set_xlabel("Contrataciones")
+            ax.set_ylabel("Cargos")
+            ax.set_title(f"Contrataciones por trimestre en {year}")
+            ax.legend(title="Trimestres", bbox_to_anchor=(1.05, 1), loc='upper left')
+
+            plt.tight_layout()
+
+            # Guarda la grafica como imagen
+            img_bytes = io.BytesIO()
+            plt.savefig(img_bytes, format="png")
+            plt.close()
+            img_bytes.seek(0)
+
+            return Response(content=img_bytes.getvalue(), media_type="image/png")
     
-    query_job = BQ_CLIENT.query(query)  
-    results = [dict(row) for row in query_job.result()]
-    if not results:
-        return {"No hay contrataciones para ese año"}
-    
-    return {"message": f"Contrataciones por trimestre en {year}", "data": results}
+    except Exception as e:
+        return {"error": str(e)}
+
+
 
 # Contrataciones por department que superan el promedio
 @app.get("/avg_plus_hires_by_department/{year}")
-async def avg_plus_hires_by_department(year: int):
+async def avg_plus_hires_by_department(year: int, view: bool = Query(False, description="Mostrar grafico en vez de los datos")):
     query = f"""
         WITH DepartmentHires AS (
             SELECT 
@@ -336,12 +396,39 @@ async def avg_plus_hires_by_department(year: int):
         dh.total_hires
         FROM DepartmentHires dh
         JOIN MeanHires mh ON dh.total_hires > mh.avg_hires
-        ORDER BY dh.total_hires DESC;
+        ORDER BY dh.total_hires;
     """
     
-    query_job = BQ_CLIENT.query(query)  # Ejecuta la consulta en BigQuery
-    results = [dict(row) for row in query_job.result()]  # Convierte los resultados en lista de diccionarios
-    if not results:
-        return {"No hay contrataciones para ese año"}
+    query_job = BQ_CLIENT.query(query) 
+    results = [dict(row) for row in query_job.result()]
     
-    return {"message": f"Contrataciones superiores al promerio por department en {year}", "data": results}
+    try:
+        if not results:
+            return {"message": f"No hay contrataciones superiores al promedio para el año {year}"}
+        
+        if not view:
+            return {"message": f"Contrataciones superiores al promedio por departament en {year}", "data": results}
+        else:
+            departments = [row['department'] for row in results]
+            total_hires = [row['total_hires'] for row in results]
+
+            fig, ax = plt.subplots(figsize=(10, 6))
+            colors = plt.get_cmap("tab20c").colors 
+
+            ax.barh(departments, total_hires, color=colors[:len(departments)])
+            ax.set_xlabel("Contrataciones")
+            ax.set_ylabel("Departaments")
+            ax.set_title(f"Contrataciones superiores al promedio por departamento en {year}")
+
+            plt.tight_layout()
+
+            # Guardar la imagen en memoria
+            img_bytes = io.BytesIO()
+            plt.savefig(img_bytes, format="png")
+            plt.close()
+            img_bytes.seek(0)
+
+            return Response(content=img_bytes.getvalue(), media_type="image/png")
+
+    except Exception as e:
+        return {"error": str(e)}
